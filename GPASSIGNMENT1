@@ -1,0 +1,79 @@
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Function to filter data based on a specified range of months
+def filter_data_by_year(data, start_month, end_month):
+    filtered_df = data.iloc[start_month - 1:end_month].copy()
+    filtered_df['Month'] = filtered_df.index
+    return filtered_df
+
+# Function to plot data for selected columns
+def plot_data(filtered_df, selected_columns, display_plot=True):
+    num_plots = len(selected_columns)
+
+    # Create a subplot for plotting
+    fig, axes = plt.subplots(nrows=num_plots, ncols=1, figsize=(15, 10), sharex=True)
+    fig.suptitle('Consumer Price Index Data')  # Set the title for the entire plot
+
+    # Plot each selected column in its subplot
+    for i, col in enumerate(selected_columns):
+        axes[i].plot(filtered_df['Month'], filtered_df[col], label=col)
+        axes[i].set(xlabel='Month', ylabel=col)
+
+    # Adjust layout for better appearance
+    plt.tight_layout(rect=[0, 0, 1, 1])
+
+    # Show the plot window and allow it to be interactive
+    plt.show() if display_plot else plt.draw()
+
+# Main program
+def main():
+    # Load the data from a CSV file
+    file_path = 'c:\\Users\\Aiman\\OneDrive\\Documents\\z - (SQIT3073) GP Assignment\\(BNM) Consumer Price Index (2020 - 2022) - Copy.csv'
+    df = pd.read_csv(file_path)
+
+    # Define columns to be displayed
+    filtered_columns = ['Months', 'Food & Non-Alcoholic Beverages', 'Health', 'Restaurant & Hotels']
+
+    # Main loop for user interaction
+    while True:
+        print("\nConsumer Price Index Data")
+        print("[1] View Data for 2020")
+        print("[2] View Data for 2021")
+        print("[3] View Data for 2022")
+        print("[4] Quit Program")
+
+        # Prompt user for selection
+        selection = input("Please Select 1/2/3/4: ")
+
+        if selection in ["1", "2", "3"]:
+            # Calculate start and end months based on user selection
+            start_month = (int(selection) - 1) * 12 + 1
+            end_month = start_month + 11
+
+            # Filter data based on selected range of months
+            filtered_df = filter_data_by_year(df, start_month, end_month)
+
+            # Display filtered data in the terminal
+            print(filtered_df[filtered_columns])
+            
+            # Ask the user if they want to view the plot
+            user_input = input("Press Enter to view the plot: ").strip().lower()
+
+            # Check if the user pressed Enter or entered 'y' to view the plot
+            if user_input == '':
+                plot_data(filtered_df, filtered_columns, display_plot=True)
+            else:
+                print("Plot skipped.")
+
+        elif selection == "4":
+            print("Program Closed")
+            break
+
+        else:
+            print("\nError. Please Select 1, 2, 3, or 4.")
+
+# Execute the main program if this script is run
+if __name__ == "__main__":
+    main()
